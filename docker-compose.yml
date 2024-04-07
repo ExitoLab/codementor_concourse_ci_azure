@@ -38,3 +38,4 @@ services:
       CONCOURSE_WORKER_WORK_DIR: /worker-state
       # If running on a non M1/M2 MacOS, optionally change this to guardian (default) or containerd (if cgroupsv2 is supported by the host)
       CONCOURSE_WORKER_RUNTIME: "houdini"
+

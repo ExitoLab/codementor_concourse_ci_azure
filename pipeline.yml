@@ -6,38 +6,40 @@ resources:
     branch: main
 
 # Where we will push the image
-- name: simple-image
-  type: registry-image
-  icon: docker
+- name: my-docker-image
+  type: docker-image
   source:
     repository: ((image-repo-name))/simple-image
+    tag: v1
     username: ((registry-username))
     password: ((registry-password))
 
 jobs:
-- name: build-and-sign-docker-image
+- name: build-and-publish-image
   public: true
   plan:
   - get: source-code
-    trigger: true
+  - put: my-docker-image
+    params:
+      build: code-repo
 
-  - task: build
-    privileged: true
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: concourse/oci-build-task
-      inputs:
-      - name: source-code
-        path: .
-      outputs:
-      - name: image
-      params:
-        CONTEXT: .
-      run:
-        path: build
+  # - task: build
+  #   privileged: true
+  #   config:
+  #     platform: linux
+  #     image_resource:
+  #       type: registry-image
+  #       source:
+  #         repository: concourse/oci-build-task
+  #     inputs:
+  #     - name: source-code
+  #       path: .
+  #     outputs:
+  #     - name: image
+  #     params:
+  #       CONTEXT: .
+  #     run:
+  #       path: build
 
   - put: simple-image
     params:
