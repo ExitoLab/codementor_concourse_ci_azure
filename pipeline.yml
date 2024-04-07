@@ -22,6 +22,7 @@ jobs:
   - put: my-docker-image
     params:
       build: code-repo
+      
 
   # - task: build
   #   privileged: true
