@@ -1,13 +1,20 @@
 resources:
+- get: get-git-credentials
+  params:
+    token: ((token))
+    username: ((username))
 - name: source-code
   type: git
   source:
-    uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
+    uri: https://${username}:${token}@github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
 
 jobs:
 - name: build-and-sign-docker-image
   plan:
+  - get: get-token
+    params:
+      token: ((token))
   - get: source-code
     trigger: true
   - task: build-docker-image
