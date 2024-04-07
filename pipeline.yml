@@ -1,35 +1,29 @@
 resources:
-# - name: source-code
-#   type: git
-#   source:
-#     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
-#     branch: main
-
-- name: concourse-docs-git
+- name: source-code
   type: git
-  icon: github
   source:
-    uri: https://github.com/concourse/docs
+    uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
+    branch: main
 
 jobs:
 - name: build-and-sign-docker-image
   public: true
   plan:
-  # - get: source-code
-  #   trigger: true
-  - get: concourse-docs-git
+  - get: source-code
     trigger: true
-    params:
-      depth: 1
-      submodules: none
-      submodules_depth: 0
-      clean_tags: true
-      clean_submodules: true
-      tag_filter: ''
-      paths:
-        - .
-      disable_lfs: true
-      target: /tmp
+  # - get: concourse-docs-git
+  #   trigger: true
+  #   params:
+  #     depth: 1
+  #     submodules: none
+  #     submodules_depth: 0
+  #     clean_tags: true
+  #     clean_submodules: true
+  #     tag_filter: ''
+  #     paths:
+  #       - .
+  #     disable_lfs: true
+  #     target: /tmp
   - task: build-docker-image
     config:
       platform: linux
