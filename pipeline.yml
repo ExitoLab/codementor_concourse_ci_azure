@@ -1,50 +1,36 @@
-# resources:
-# - name: source-code
-#   type: git
-#   source:
-#     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
-#     branch: main
-
-# jobs:
-# - name: build-and-sign-docker-image
-#   plan:
-#   - get: source-code
-#     trigger: true
-#   - task: build-docker-image
-#     config:
-#       platform: linux
-#       image_resource:
-#         type: docker-image
-#         source: {repository: docker}
-#       inputs:
-#       - name: source-code
-#       run:
-#         path: source-code/build.sh
-
-#   # - task: sign-docker-image
-#   #   config:
-#   #     platform: linux
-#   #     image_resource:
-#   #       type: docker-image
-#   #       source: {repository: docker}
-#   #     inputs:
-#   #     - name: source-code
-#   #     params:
-#   #       SIGNING_KEY_URI: ((SIGNING_KEY_URI))
-#   #       SIGNING_CERT_URI: ((SIGNING_CERT_URI))
-#   #     run:
-#   #       path: source-code/sign.sh
-
-
 resources:
-- name: booklit
+- name: source-code
   type: git
-  source: {uri: "https://github.com/concourse/booklit"}
+  source:
+    uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
+    branch: main
 
 jobs:
-- name: unit
+- name: build-and-sign-docker-image
   plan:
-  - get: booklit
+  - get: source-code
     trigger: true
-  - task: test
-    file: booklit/ci/test.yml
+  - task: build-docker-image
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: docker}
+      inputs:
+      - name: source-code
+      run:
+        path: source-code/build.sh
+
+  # - task: sign-docker-image
+  #   config:
+  #     platform: linux
+  #     image_resource:
+  #       type: docker-image
+  #       source: {repository: docker}
+  #     inputs:
+  #     - name: source-code
+  #     params:
+  #       SIGNING_KEY_URI: ((SIGNING_KEY_URI))
+  #       SIGNING_CERT_URI: ((SIGNING_CERT_URI))
+  #     run:
+  #       path: source-code/sign.sh
