@@ -1,0 +1,24 @@
+jobs:
+- name: job1
+  plan:
+  - task: task1
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: busybox}
+      run:
+        path: echo
+        args: ["Job 1 is running"]
+
+- name: job2
+  plan:
+  - task: task2
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: busybox}
+      run:
+        path: echo
+        args: ["Job 2 is running"]
