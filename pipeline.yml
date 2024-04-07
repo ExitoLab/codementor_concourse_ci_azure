@@ -5,12 +5,43 @@ resources:
     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
 
+# Where we will push the image
+- name: simple-image
+  type: registry-image
+  icon: docker
+  source:
+    repository: ((image-repo-name))/simple-image
+    username: ((registry-username))
+    password: ((registry-password))
+
 jobs:
 - name: build-and-sign-docker-image
   public: true
   plan:
   - get: source-code
     trigger: true
+
+  - task: build-task-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+      inputs:
+      - name: source-code
+      outputs:
+      - name: image
+      params:
+        CONTEXT: .
+      run:
+        path: build
+  - put: simple-image
+    params:
+      image: image
+
+
   # - get: concourse-docs-git
   #   trigger: true
   #   params:
@@ -53,6 +84,8 @@ jobs:
           - |
             cd source-code
             ./build.sh  # Adjust the path and name of the script as needed
+
+
 
   # - task: sign-docker-image
   #   config:
