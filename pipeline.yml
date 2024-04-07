@@ -10,6 +10,17 @@ jobs:
   plan:
   - get: source-code
     trigger: true
+    params:
+      depth: 1
+      submodules: none
+      submodules_depth: 0
+      clean_tags: true
+      clean_submodules: true
+      tag_filter: ''
+      paths:
+        - .
+      disable_lfs: true
+      target: /tmp
   - task: build-docker-image
     config:
       platform: linux
