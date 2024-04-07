@@ -1,8 +1,4 @@
 resources:
-- get: get-git-credentials
-  params:
-    token: ((token))
-    username: ((username))
 - name: source-code
   type: git
   source:
@@ -12,9 +8,6 @@ resources:
 jobs:
 - name: build-and-sign-docker-image
   plan:
-  - get: get-token
-    params:
-      token: ((token))
   - get: source-code
     trigger: true
   - task: build-docker-image
