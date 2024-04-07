@@ -20,6 +20,7 @@ jobs:
       - name: source-code
       run:
         path: source-code/build.sh
+        
   # - task: sign-docker-image
   #   config:
   #     platform: linux
