@@ -22,7 +22,7 @@ jobs:
     trigger: true
 
   - task: build
-    privileged: false
+    privileged: true
     config:
       platform: linux
       image_resource:
