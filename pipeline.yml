@@ -2,7 +2,7 @@ resources:
 - name: source-code
   type: git
   source:
-    uri: https://${username}:${token}@github.com/ExitoLab/codementor_concourse_ci_azure.git
+    uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: source-code
       run:
         path: source-code/build.sh
-        
+
   # - task: sign-docker-image
   #   config:
   #     platform: linux
