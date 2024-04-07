@@ -24,17 +24,35 @@ jobs:
   #       - .
   #     disable_lfs: true
   #     target: /tmp
+  # - task: build-docker-image
+  #   config:
+  #     platform: linux
+  #     image_resource:
+  #       type: docker-image
+  #       source: {repository: docker}
+  #     inputs:
+  #     - name: source-code
+  #     run:
+  #       path: source-code/build.sh
+
+
   - task: build-docker-image
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: docker}
+        source:
+          repository: your-docker-repo/image-name
+          tag: latest  # or specify the appropriate tag
       inputs:
       - name: source-code
       run:
-        path: source-code/build.sh
-
+        path: /bin/sh
+        args:
+          - -exc
+          - |
+            cd source-code
+            ./build.sh  # Adjust the path and name of the script as needed
 
   # - task: sign-docker-image
   #   config:
