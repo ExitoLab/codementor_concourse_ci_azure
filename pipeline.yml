@@ -21,7 +21,7 @@ jobs:
   - get: source-code
     trigger: true
 
-  - task: build-task-image
+  - task: build
     privileged: false
     config:
       platform: linux
@@ -31,12 +31,14 @@ jobs:
           repository: concourse/oci-build-task
       inputs:
       - name: source-code
+        path: .
       outputs:
       - name: image
       params:
         CONTEXT: .
       run:
         path: build
+
   - put: simple-image
     params:
       image: image
