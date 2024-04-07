@@ -9,7 +9,7 @@ resources:
 - name: my-docker-image
   type: docker-image
   source:
-    repository: ((image-repo-name))/simple-image
+    repository: ((image-repo-name))
     tag: v1
     username: ((registry-username))
     password: ((registry-password))
@@ -22,7 +22,7 @@ jobs:
   - put: my-docker-image
     params:
       build: code-repo
-      
+
 
   # - task: build
   #   privileged: true
