@@ -26,96 +26,49 @@ jobs:
   #           echo "Hello, world!"
   #           # Additional commands...
 
-  # - task: build-task-image
-  #   privileged: true
-  #   config:
-  #     platform: linux
-  #     image_resource:
-  #       type: registry-image
-  #       source:
-  #         # Check out the README for oci-build-task at
-  #         # https://github.com/concourse/oci-build-task
-  #         repository: concourse/oci-build-task
-  #     inputs:
-  #     - name: source-code
-  #     outputs:
-  #     - name: image
-  #     params:
-  #       CONTEXT: .
-  #       UNPACK_ROOTFS: "true" # only needed if using image in a future step
-  #     run:
-  #       path: build
 
-
-
-# jobs:
-# - name: build-and-publish-sign-image
-#   plan:
-#   - get: source-code
-#     trigger: true
-#   - put: docker-image
-#     params:
-#       build: .
-
-
-  # - task: build
-  #   privileged: true
-  #   config:
-  #     platform: linux
-  #     image_resource:
-  #       type: registry-image
-  #       source:
-  #         repository: concourse/oci-build-task
-  #     inputs:
-  #     - name: source-code
-  #       path: .
-  #     outputs:
-  #     - name: image
-  #     params:
-  #       CONTEXT: .
-  #     run:
-  #       path: build
-
-
-
-  # - get: concourse-docs-git
-  #   trigger: true
-  #   params:
-  #     depth: 1
-  #     submodules: none
-  #     submodules_depth: 0
-  #     clean_tags: true
-  #     clean_submodules: true
-  #     tag_filter: ''
-  #     paths:
-  #       - .
-  #     disable_lfs: true
-  #     target: /tmp
-  # - task: build-docker-image
-  #   config:
-  #     platform: linux
-  #     image_resource:
-  #       type: docker-image
-  #       source: {repository: docker}
-  #     inputs:
-  #     - name: source-code
-  #     run:
-  #       path: source-code/build.sh
-
-  # - task: build-docker-image
-  #   config:
-  #     platform: linux
-  #     image_resource:
-  #       type: docker-image
-  #       source:
-  #         repository: your-docker-repo/image-name
-  #         tag: latest  # or specify the appropriate tag
-  #     inputs:
-  #     - name: source-code
-  #     run:
-  #       path: /bin/sh
-  #       args:
-  #         - -exc
-  #         - |
-  #           cd source-code
-  #           ./build.sh  # Adjust the path and name of the script as needed
+  - task: sign-and-push
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: alpine}
+      inputs:
+      - name: source-code
+      outputs:
+      - name: image
+      run:
+        path: /bin/sh
+        args:
+          - -exc
+          - |
+            #!/bin/bash
+            
+            # Function to retrieve secret from Azure Key Vault
+            get_secret() {
+                local secret_uri=$1
+                local secret_value=$(az keyvault secret show --vault-name your_keyvault_name --name "$secret_uri" --query value -o tsv)
+                echo "$secret_value"
+            }
+            
+            # Fetch the signing key and certificate from Azure Key Vault
+            SIGNING_KEY=$(get_secret "$SIGNING_KEY_URI")
+            SIGNING_CERT=$(get_secret "$SIGNING_CERT_URI")
+            
+            # Set up Notary configuration
+            export NOTARY_ROOT_PASSPHRASE=your_root_passphrase
+            export NOTARY_TARGETS_PASSPHRASE=your_targets_passphrase
+            export NOTARY_SNAPSHOT_PASSPHRASE=your_snapshot_passphrase
+            
+            # Sign the Docker image using Notary CLI
+            notary -s https://your.notary.server.com sign your_image_name:your_tag
+            
+            # Authenticate with Azure Container Registry
+            az acr login --name your_acr_name
+            
+            # Tag the signed Docker image for Azure Container Registry
+            docker tag your_image_name:your_tag your_acr_name.azurecr.io/your_image_name:your_tag
+            
+            # Push the signed Docker image to Azure Container Registry
+            docker push your_acr_name.azurecr.io/your_image_name:your_tag
