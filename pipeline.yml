@@ -17,6 +17,8 @@ jobs:
 - name: build-and-use-image
   plan:
   - get:  source-code
+    trigger: true
+    
   - task: build-task-image
     privileged: true
     config:
