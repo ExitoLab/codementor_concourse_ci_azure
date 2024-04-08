@@ -18,12 +18,26 @@ jobs:
 - name: build-and-publish-image
   public: true
   plan:
-  - get: source-code
-  - put: my-docker-image
-    params:
-      build: code-repo
+  - task: build-docker-image
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: concourse/oci-build-task
+      inputs:
+        - name: source-code
+      outputs:
+        - name: docker-image
+      run:
+        path: sh
+        args:
+          - -exc
+          - |
+            # Build Docker image (example)
+            docker build -t my-image:latest .
 
-      
+
 
 
   # - task: build
