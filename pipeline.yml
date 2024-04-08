@@ -14,7 +14,7 @@ resources:
 #     repository: {{image-repo-name}}
 
 jobs:
-- name: build-and-use-image
+- name: build-and-use-sign-image
   plan:
   - get:  source-code
     trigger: true
