@@ -30,8 +30,6 @@ jobs:
             docker build -t my-image:latest .
 
 
-
-
   # - task: build
   #   privileged: true
   #   config:
