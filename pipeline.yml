@@ -6,13 +6,6 @@ resources:
     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
 
-# - name: docker-image
-#   type: docker-image
-#   source:
-#     username: {{registry-username}}
-#     password: {{registry-password}}
-#     repository: {{image-repo-name}}
-
 jobs:
 - name: build-and-use-sign-image
   plan:
