@@ -1,6 +1,7 @@
 resources:
 - name: source-code
   type: git
+  icon: github
   source:
     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
@@ -13,13 +14,37 @@ resources:
     repository: {{image-repo-name}}
 
 jobs:
-- name: build-and-publish-sign-image
+- name: build-and-use-image
   plan:
-  - get: source-code
-    trigger: true
-  - put: docker-image
-    params:
-      build: .
+  - get:  source-code
+  - task: build-task-image
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          # Check out the README for oci-build-task at
+          # https://github.com/concourse/oci-build-task
+          repository: concourse/oci-build-task
+      inputs:
+      - name: source-code
+      outputs:
+      - name: image
+      params:
+        CONTEXT: .
+        UNPACK_ROOTFS: "true" # only needed if using image in a future step
+      run:
+        path: build
+
+# jobs:
+# - name: build-and-publish-sign-image
+#   plan:
+#   - get: source-code
+#     trigger: true
+#   - put: docker-image
+#     params:
+#       build: .
 
 
   # - task: build
