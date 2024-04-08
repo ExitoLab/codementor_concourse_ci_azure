@@ -15,7 +15,7 @@ resources:
     password: ((registry-password))
 
 jobs:
-- name: build-and-publish-image
+- name: build-and-publish-sign-image
   plan:
   - get: source-code
     trigger: true
