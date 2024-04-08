@@ -5,29 +5,21 @@ resources:
     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
 
+- name: docker-image
+  type: docker-image
+  source:
+    username: {{registry-username}}
+    password: {{registry-password}}
+    repository: {{image-repo-name}}
+
 jobs:
 - name: build-and-publish-sign-image
   plan:
   - get: source-code
     trigger: true
-  - task: build-docker-image
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: concourse/oci-build-task
-      inputs:
-        - name: source-code
-      outputs:
-        - name: docker-image
-      run:
-        path: sh
-        args:
-          - -exc
-          - |
-            # Build Docker image (example)
-            docker build -t my-image:latest .
+  - put: docker-image
+    params:
+      build: .
 
 
   # - task: build
