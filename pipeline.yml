@@ -18,6 +18,8 @@ jobs:
 - name: build-and-publish-image
   public: true
   plan:
+  - get: source-code
+    trigger: true
   - task: build-docker-image
     config:
       platform: linux
