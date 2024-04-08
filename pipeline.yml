@@ -1,7 +1,6 @@
 resources:
 - name: source-code
   type: git
-  icon: github
   source:
     uri: https://github.com/ExitoLab/codementor_concourse_ci_azure.git
     branch: main
