@@ -19,25 +19,40 @@ jobs:
   - get:  source-code
     trigger: true
 
-  - task: build-task-image
-    privileged: true
+  - task: run-script
     config:
       platform: linux
       image_resource:
-        type: registry-image
-        source:
-          # Check out the README for oci-build-task at
-          # https://github.com/concourse/oci-build-task
-          repository: concourse/oci-build-task
-      inputs:
-      - name: source-code
-      outputs:
-      - name: image
-      params:
-        CONTEXT: .
-        UNPACK_ROOTFS: "true" # only needed if using image in a future step
+        type: docker-image
+        source: {repository: busybox}
       run:
-        path: build
+        path: /bin/sh
+        args:
+          - -exc
+          - |
+            # Your script commands go here
+            echo "Hello, world!"
+            # Additional commands...
+
+  # - task: build-task-image
+  #   privileged: true
+  #   config:
+  #     platform: linux
+  #     image_resource:
+  #       type: registry-image
+  #       source:
+  #         # Check out the README for oci-build-task at
+  #         # https://github.com/concourse/oci-build-task
+  #         repository: concourse/oci-build-task
+  #     inputs:
+  #     - name: source-code
+  #     outputs:
+  #     - name: image
+  #     params:
+  #       CONTEXT: .
+  #       UNPACK_ROOTFS: "true" # only needed if using image in a future step
+  #     run:
+  #       path: build
 
 
 
