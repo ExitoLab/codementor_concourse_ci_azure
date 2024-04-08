@@ -16,7 +16,6 @@ resources:
 
 jobs:
 - name: build-and-publish-image
-  public: true
   plan:
   - get: source-code
     trigger: true
